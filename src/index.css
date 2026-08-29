@@ -2,17 +2,284 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: dark;
+@font-face {
+  font-family: 'Unigeo 32';
+  src: url('/fonts/Unigeo32-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
-body {
-  margin: 0;
-  background: rgb(2 6 23); /* slate-950 */
-  color: rgb(241 245 249); /* slate-100 */
+@font-face {
+  font-family: 'Unigeo 32';
+  src: url('/fonts/Unigeo32-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Unigeo 32';
+  src: url('/fonts/Unigeo32-Semibold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Unigeo 32';
+  src: url('/fonts/Unigeo32-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Unigeo 32';
+  src: url('/fonts/Unigeo32-Extrabold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+  --font-display: 'Unigeo 32', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-body);
+  }
+
+  body {
+    margin: 0;
+    background-color: #f6f8fa;
+    color: #1a1a1a;
+    font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    @apply font-semibold;
+  }
+
+  p,
+  li,
+  button,
+  input,
+  textarea,
+  label,
+  dd,
+  dt,
+  figcaption {
+    font-family: var(--font-body);
+  }
+}
+
+.font-mono,
+.font-mono * {
+  font-family: ui-monospace, 'Roboto Mono', 'Space Mono', monospace;
+}
+
+/* Hide native cursor only on FigJam canvas zones — keep normal cursor elsewhere */
+.figjam-canvas,
+.figjam-canvas * {
+  cursor: none !important;
+}
+
+/* Hero draggable stickies — restore grab cursor inside figjam canvas zone */
+.hero-sticky-layer,
+.hero-sticky-layer * {
+  cursor: grab !important;
+}
+
+.hero-sticky-layer *:active {
+  cursor: grabbing !important;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* ─── App shell ───────────────────────────────────────────────────────────── */
+.app-shell {
+  background-color: #f6f8fa;
+}
+
+/* ─── FigJam canvas dot grid ──────────────────────────────────────────────── */
+.figjam-canvas {
+  background-color: #ffffff;
+  background-image: radial-gradient(circle, #BFBFBF 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-attachment: fixed;
+}
+
+/* ─── Post-hero studio canvas ─────────────────────────────────────────────── */
+.post-hero-studio {
+  position: relative;
+  background-color: #f6f8fa;
+}
+
+/* ─── Section atmosphere (unified process studio wash) ────────────────────── */
+.section-atmosphere-process {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 247, 237, 0.65) 0%,
+    rgba(246, 248, 250, 0.1) 55%,
+    rgba(254, 243, 199, 0.3) 100%
+  );
+}
+
+/* ─── Content zones ─────────────────────────────────────────────────────────
+   Calm solid backgrounds for reading-heavy sections (case studies, forms).
+   ─────────────────────────────────────────────────────────────────────────── */
+.content-zone {
+  background-color: #FAFAFA;
+}
+
+@media (max-width: 767px) {
+  .figjam-canvas {
+    background-attachment: scroll;
+  }
+}
+
+/* ─── FigJam sticky note tokens ─────────────────────────────────────────────
+   Each color maps to a real FigJam sticky palette entry.
+   Used by StickyNote.tsx — defined here for reference / global overrides.
+   ─────────────────────────────────────────────────────────────────────────── */
+:root {
+  --sticky-yellow:  #FFF9C4;
+  --sticky-purple:  #EDE9FE;
+  --sticky-green:   #D4F7D4;
+  --sticky-pink:    #FFE4E6;
+  --sticky-blue:    #DBEAFE;
+
+  --frame-border:   #BFBFBF;
+  --frame-label-color: rgba(26, 26, 26, 0.50);
+
+  --connector-color: #BFBFBF;
+  --connector-active: #7C3AED;
+}
+
+/* Frame label — used directly in JSX, defined here for reference */
+.figjam-frame-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--frame-label-color);
+}
+
+/* ─── Text cursor blink ──────────────────────────────────────────────────────
+   Used in the hero editing interface — mimics a real text insertion cursor.
+   step-end ensures a hard on/off blink, not a fade, matching IDE/design tool behaviour.
+   ─────────────────────────────────────────────────────────────────────────── */
+@keyframes text-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ─── Skills Marquee ─────────────────────────────────────────────────────────── */
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  overflow: hidden;
+  background: #050a18;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.18);
+}
+
+.marquee-inner {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  padding: 14px 0;
+  animation: marquee-scroll 20s linear infinite;
+}
+
+.marquee-track:hover .marquee-inner {
+  animation-play-state: paused;
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 40px;
+  padding: 0 40px;
+  flex-shrink: 0;
+}
+
+.marquee-skill {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.marquee-star {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  color: #ffffff;
+}
+
+.stamp-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 16px;
+  border: 1.5px solid #1a1917;
+  border-radius: 0;
+  background: transparent;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #1a1917;
+  white-space: nowrap;
+  cursor: default;
+  transition: background 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.stamp-tag:hover {
+  background: #1a1917;
+  color: #f7f6f2;
+}
+
+.stamp-tag.accent {
+  border-color: #6b5ce7;
+  color: #6b5ce7;
+}
+
+.stamp-tag.accent:hover {
+  background: #6b5ce7;
+  color: #ffffff;
+}
+
+/* Stamp chip — small tag/badge used for skills and project tags */
+.figjam-stamp {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 99px;
+  border: 1.5px solid var(--frame-border);
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(255,255,255,0.8);
+  color: #1a1a1a;
+  letter-spacing: 0.01em;
 }
