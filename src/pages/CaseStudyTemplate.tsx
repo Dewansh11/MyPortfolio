@@ -89,6 +89,32 @@ const CONSTRAINT_ITEMS = [
   'Legacy backend limited API changes',
 ] as const
 
+const PORVENIX_CONTEXT = {
+  role: 'Product Designer',
+  timeline: '~6 weeks',
+  tools: ['Figma', 'FigJam', 'Cursor', 'Claude'] as const,
+  roleItems: [
+    'Sole product designer — owned interaction design and IA end-to-end',
+    'Designed the four-card market system and three-tier navigation architecture from scratch, with no existing design system to build from',
+    'Ran user research independently (interviews, usability sessions)',
+    'Collaborated with 1 PM, 1 tech lead, 3 engineers (1 frontend, 2 backend), 1 QA',
+  ],
+  constraints: [
+    'Fixed, non-negotiable delivery deadline',
+    'No prior design system — every component, token, and pattern built from zero',
+    "Backend couldn't support real-time odds updates, forcing design decisions around data staleness (polling intervals instead of live push)",
+  ],
+} as const
+
+const PORVENIX_PROBLEM = {
+  hook: 'Prediction markets were built for traders, not for phones — and that gap was the opportunity.',
+  body: [
+    'A review of existing platforms — Polymarket, Kalshi — showed dense, trading-terminal interfaces adapted for mobile screens rather than designed for them: dense tables, multi-step order flows, and terminology that assumes a level of market literacy most mobile users don\'t have.',
+    'Porvenix set out to build the reverse — a prediction markets platform designed mobile-first from the ground up, where browsing markets, reading odds, and understanding a bet takes seconds, not a learning curve borrowed from a trading terminal.',
+    'No formal user segmentation existed at project start. Based on the platform\'s scope — spanning sports, politics, crypto, and culture — the design targeted casually news-engaged mobile users, not existing traders, since the product\'s own category mix made clear the audience would skew broader than finance-literate power users.',
+  ],
+} as const
+
 const RESEARCH_INSIGHTS = [
   'Drop-off clustered at steps three and five',
   'Dual CTAs created decision paralysis',
@@ -204,11 +230,23 @@ function HeroMockup({
 
 // ── 01 Context Dashboard ────────────────────────────────────────────────────
 
-function ContextDashboard() {
+function ContextDashboard({
+  role = CONTEXT_DASHBOARD.role,
+  timeline = CONTEXT_DASHBOARD.timeline,
+  tools = CONTEXT_DASHBOARD.tools,
+  roleItems = ROLE_ITEMS,
+  constraints = CONSTRAINT_ITEMS,
+}: {
+  role?: string
+  timeline?: string
+  tools?: readonly string[]
+  roleItems?: readonly string[]
+  constraints?: readonly string[]
+}) {
   return (
     <section className={SECTION} aria-labelledby="context-heading">
       <div className={CONTENT}>
-        <CaseStudySectionLabel number="01" title="Context Dashboard" />
+        <CaseStudySectionLabel number="01" title="The Setup" />
         <p id="context-heading" className="sr-only">
           Role, timeline, and tools
         </p>
@@ -219,10 +257,10 @@ function ContextDashboard() {
               Role
             </p>
             <p className="mb-6 font-mono text-lg font-extrabold uppercase text-black">
-              {CONTEXT_DASHBOARD.role}
+              {role}
             </p>
             <ul className="space-y-3">
-              {ROLE_ITEMS.map(item => (
+              {roleItems.map(item => (
                 <li key={item} className="flex gap-3 text-sm leading-relaxed text-zinc-700">
                   <span className="mt-0.5 shrink-0 font-mono text-sm font-extrabold text-blue-600">
                     ■
@@ -238,10 +276,10 @@ function ContextDashboard() {
               Timeline
             </p>
             <p className="mb-6 font-mono text-lg font-extrabold uppercase text-black">
-              {CONTEXT_DASHBOARD.timeline}
+              {timeline}
             </p>
             <ul className="space-y-3">
-              {CONSTRAINT_ITEMS.map(item => (
+              {constraints.map(item => (
                 <li key={item} className="flex gap-3 text-sm leading-relaxed text-zinc-700">
                   <span className="mt-0.5 shrink-0 font-mono text-sm font-extrabold text-orange-500">
                     ✕
@@ -257,7 +295,7 @@ function ContextDashboard() {
               Tools Used
             </p>
             <div className="flex flex-wrap gap-2">
-              {CONTEXT_DASHBOARD.tools.map(tool => (
+              {tools.map(tool => (
                 <span key={tool} className={CHIP}>
                   {tool}
                 </span>
@@ -272,23 +310,37 @@ function ContextDashboard() {
 
 // ── 02 Problem Space ────────────────────────────────────────────────────────
 
-function ProblemSpaceSection() {
+function ProblemSpaceSection({
+  hook = PLACEHOLDER.hook,
+  body,
+}: {
+  hook?: string
+  body?: readonly string[]
+}) {
+  const paragraphs = body ?? [
+    PLACEHOLDER.problemBody,
+    'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.',
+  ]
+
   return (
     <section className={`${SECTION} bg-white`} aria-labelledby="problem-heading">
       <div className={CONTENT}>
         <CaseStudySectionLabel number="02" title="The Problem Space" />
 
         <p className="mb-12 max-w-4xl text-2xl font-semibold leading-snug tracking-tight text-black lg:text-3xl">
-          {PLACEHOLDER.hook}
+          {hook}
         </p>
 
         <div className="grid grid-cols-1 items-start gap-12 overflow-visible lg:grid-cols-12">
           <div className="lg:col-span-7">
-            <p className="text-base leading-relaxed text-zinc-500">{PLACEHOLDER.problemBody}</p>
-            <p className="mt-4 text-base leading-relaxed text-zinc-500">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident.
-            </p>
+            {paragraphs.map((paragraph, index) => (
+              <p
+                key={paragraph}
+                className={`text-base leading-relaxed text-zinc-500${index > 0 ? ' mt-4' : ''}`}
+              >
+                {paragraph}
+              </p>
+            ))}
           </div>
 
           <aside className="overflow-visible lg:col-span-5">
@@ -631,8 +683,8 @@ export default function CaseStudyTemplate() {
   return (
     <article key={slug} className="w-full bg-[#f6f8fa] pt-16 text-black">
       <HeroMockup title={study.projectTitle} meta={study.heroMeta} heroSrc={study.heroSrc} />
-      <ContextDashboard />
-      <ProblemSpaceSection />
+      <ContextDashboard {...(slug === 'porvenix' ? PORVENIX_CONTEXT : {})} />
+      <ProblemSpaceSection {...(slug === 'porvenix' ? PORVENIX_PROBLEM : {})} />
       <ResearchSection />
       <ExperienceMappingSection />
       <UiConceptsSection />
