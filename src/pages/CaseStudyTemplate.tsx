@@ -106,6 +106,36 @@ const PORVENIX_CONTEXT = {
   ],
 } as const
 
+const PORVENIX_SNAPSHOT = [
+  { label: 'Role', value: 'Product Designer (sole designer)' },
+  { label: 'Team', value: '1 PM, 1 Tech Lead, 3 Engineers (1 Frontend, 2 Backend), 1 QA' },
+  { label: 'Timeline', value: '~6 weeks' },
+  { label: 'Tools', value: 'Figma, FigJam, Cursor, Claude' },
+] as const
+
+const PORVENIX_SOLUTION = [
+  {
+    caption: 'Low-fi market browse structure',
+    src: null,
+    placeholder: '[Add screenshot: low-fi wireframe]',
+  },
+  {
+    caption: 'Tokens and components before paint',
+    src: null,
+    placeholder: '[Add screenshot: design system tokens/components]',
+  },
+  {
+    caption: 'Logged-in market feed',
+    src: '/porvenix-card-hero.png',
+    placeholder: null,
+  },
+  {
+    caption: 'High-fidelity product UI',
+    src: '/porvenix-case-hero.png',
+    placeholder: null,
+  },
+] as const
+
 const PORVENIX_PROBLEM = {
   hook: 'Prediction markets were built for traders, not for phones — and that gap was the opportunity.',
   body: [
@@ -313,9 +343,13 @@ function ContextDashboard({
 function ProblemSpaceSection({
   hook = PLACEHOLDER.hook,
   body,
+  number = '02',
+  title = 'The Problem Space',
 }: {
   hook?: string
   body?: readonly string[]
+  number?: string
+  title?: string
 }) {
   const paragraphs = body ?? [
     PLACEHOLDER.problemBody,
@@ -325,7 +359,7 @@ function ProblemSpaceSection({
   return (
     <section className={`${SECTION} bg-white`} aria-labelledby="problem-heading">
       <div className={CONTENT}>
-        <CaseStudySectionLabel number="02" title="The Problem Space" />
+        <CaseStudySectionLabel number={number} title={title} />
 
         <p className="mb-12 max-w-4xl text-2xl font-semibold leading-snug tracking-tight text-black lg:text-3xl">
           {hook}
@@ -555,11 +589,19 @@ function ScreenSlot({ label, fullWidth = false }: { label: string; fullWidth?: b
 
 // ── 08 Metric Impact & Retrospective ────────────────────────────────────────
 
-function ImpactRetrospectiveSection() {
+function ImpactRetrospectiveSection({
+  number = '08',
+  title = 'Metric Impact & Retrospective',
+  oversizedMetrics = false,
+}: {
+  number?: string
+  title?: string
+  oversizedMetrics?: boolean
+}) {
   return (
     <section className={`${SECTION} bg-white`} aria-labelledby="impact-heading">
       <div className={CONTENT}>
-        <CaseStudySectionLabel number="08" title="Metric Impact & Retrospective" />
+        <CaseStudySectionLabel number={number} title={title} />
 
         <div
           className={`mb-12 grid grid-cols-1 overflow-hidden sm:grid-cols-3 ${CARD}`}
@@ -574,7 +616,15 @@ function ImpactRetrospectiveSection() {
                 index > 0 ? 'sm:border-l-[3px] sm:border-black' : ''
               } ${index > 0 ? 'border-t-[3px] border-black sm:border-t-0' : ''}`}
             >
-              <p className="font-mono text-3xl font-extrabold text-black lg:text-4xl">{stat.value}</p>
+              <p
+                className={
+                  oversizedMetrics
+                    ? 'font-mono text-5xl font-extrabold leading-none tracking-tight text-black lg:text-6xl'
+                    : 'font-mono text-3xl font-extrabold text-black lg:text-4xl'
+                }
+              >
+                {stat.value}
+              </p>
               <p className="mt-2 font-mono text-xs font-bold uppercase tracking-widest text-zinc-500 opacity-60">
                 {stat.label}
               </p>
@@ -589,7 +639,11 @@ function ImpactRetrospectiveSection() {
         <div className={`${CARD} mb-12 bg-amber-400 p-10 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] md:p-12`}>
           <h3
             id="impact-heading"
-            className="font-mono text-3xl font-semibold uppercase leading-tight tracking-tight text-black lg:text-4xl"
+            className={
+              oversizedMetrics
+                ? 'font-mono text-4xl font-extrabold uppercase leading-tight tracking-tight text-black lg:text-5xl'
+                : 'font-mono text-3xl font-semibold uppercase leading-tight tracking-tight text-black lg:text-4xl'
+            }
           >
             {PLACEHOLDER.outcomeStat}
           </h3>
@@ -612,6 +666,110 @@ function ImpactRetrospectiveSection() {
           >
             Download Case Study
           </BrutalistButton>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ── Porvenix — 5-section layout ─────────────────────────────────────────────
+
+function PorvenixSnapshot() {
+  return (
+    <section className="border-b-[3px] border-black bg-[#fcfbfa] py-12" aria-labelledby="snapshot-heading">
+      <div className={CONTENT}>
+        <CaseStudySectionLabel number="01" title="Snapshot" />
+        <p id="snapshot-heading" className="sr-only">
+          Role, team, timeline, and tools
+        </p>
+
+        <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {PORVENIX_SNAPSHOT.map(item => (
+            <div key={item.label}>
+              <dt className="font-mono text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+                {item.label}
+              </dt>
+              <dd className="mt-1.5 text-sm font-semibold leading-snug text-zinc-900">{item.value}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <ul className="mt-8 space-y-2 border-t border-zinc-200 pt-6">
+          {PORVENIX_CONTEXT.constraints.map(item => (
+            <li key={item} className="flex gap-2 text-xs leading-relaxed text-zinc-500">
+              <span className="mt-0.5 shrink-0 font-mono text-[10px] text-orange-500" aria-hidden="true">
+                ✕
+              </span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+function PorvenixKeyDecisions() {
+  return (
+    <section className={SECTION} aria-labelledby="decisions-heading">
+      <div className={CONTENT}>
+        <CaseStudySectionLabel number="03" title="Key Decisions" />
+        <p id="decisions-heading" className="sr-only">
+          Key product decisions
+        </p>
+        <p className="mb-10 font-mono text-[11px] font-medium uppercase tracking-widest text-zinc-400">
+          Based on 12 interviews, usability sessions, and analytics review
+        </p>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {IA_STEPS.map(step => (
+            <article key={step.number} className={`${CARD} flex flex-col p-6 md:p-8`}>
+              <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-blue-600">
+                {step.number} {step.label}
+              </p>
+              <p className="mt-4 text-sm font-semibold leading-relaxed text-black">
+                {step.choice} {step.why}
+              </p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function PorvenixSolution() {
+  return (
+    <section className={`${SECTION} bg-white`} aria-labelledby="solution-heading">
+      <div className={CONTENT}>
+        <CaseStudySectionLabel number="04" title="The Solution" />
+        <p id="solution-heading" className="sr-only">
+          From wireframe to high-fidelity
+        </p>
+
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {PORVENIX_SOLUTION.map(stage => (
+            <figure key={stage.caption}>
+              {stage.src ? (
+                <div className="overflow-hidden border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  <img
+                    src={stage.src}
+                    alt={stage.caption}
+                    className="block aspect-[4/5] h-auto w-full object-cover object-top"
+                  />
+                </div>
+              ) : (
+                <ImagePlaceholder
+                  label={stage.placeholder ?? ''}
+                  ariaLabel={stage.placeholder ?? stage.caption}
+                  className="aspect-[4/5] w-full bg-zinc-100"
+                />
+              )}
+              <figcaption className="mt-3 font-mono text-xs font-bold uppercase tracking-widest text-zinc-500">
+                {stage.caption}
+              </figcaption>
+            </figure>
+          ))}
         </div>
       </div>
     </section>
@@ -679,18 +837,39 @@ function CaseStudyNav({
 export default function CaseStudyTemplate() {
   const { slug } = useParams()
   const study = STUDIES[(slug as StudySlug) ?? 'porvenix'] ?? STUDIES.porvenix
+  const isPorvenix = slug === 'porvenix'
 
   return (
     <article key={slug} className="w-full bg-[#f6f8fa] pt-16 text-black">
       <HeroMockup title={study.projectTitle} meta={study.heroMeta} heroSrc={study.heroSrc} />
-      <ContextDashboard {...(slug === 'porvenix' ? PORVENIX_CONTEXT : {})} />
-      <ProblemSpaceSection {...(slug === 'porvenix' ? PORVENIX_PROBLEM : {})} />
-      <ResearchSection />
-      <ExperienceMappingSection />
-      <UiConceptsSection />
-      <DesignSystemSection />
-      <HighFidelitySection />
-      <ImpactRetrospectiveSection />
+      {isPorvenix ? (
+        <>
+          <PorvenixSnapshot />
+          <ProblemSpaceSection
+            {...PORVENIX_PROBLEM}
+            number="02"
+            title="The Problem"
+          />
+          <PorvenixKeyDecisions />
+          <PorvenixSolution />
+          <ImpactRetrospectiveSection
+            number="05"
+            title="Impact & Reflection"
+            oversizedMetrics
+          />
+        </>
+      ) : (
+        <>
+          <ContextDashboard />
+          <ProblemSpaceSection />
+          <ResearchSection />
+          <ExperienceMappingSection />
+          <UiConceptsSection />
+          <DesignSystemSection />
+          <HighFidelitySection />
+          <ImpactRetrospectiveSection />
+        </>
+      )}
       <CaseStudyNav
         prevSlug={study.prevSlug}
         prevName={study.prevName}
