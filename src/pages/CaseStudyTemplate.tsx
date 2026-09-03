@@ -115,7 +115,11 @@ const PORVENIX_TEAM_CHIPS = [
   '1 QA',
 ] as const
 
-const PORVENIX_SOLUTION = [
+const PORVENIX_SOLUTION: {
+  caption: string
+  src: string | null
+  placeholder: string | null
+}[] = [
   {
     caption: 'Low-fi market browse structure',
     src: null,
