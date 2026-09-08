@@ -4,6 +4,9 @@ import BrutalistButton from '../components/BrutalistButton'
 import CaseStudySectionLabel from '../components/case-study/CaseStudySectionLabel'
 import ImagePlaceholder from '../components/case-study/ImagePlaceholder'
 import OffsetCard from '../components/case-study/OffsetCard'
+import ProblemComparisonDiagram from '../components/case-study/ProblemComparisonDiagram'
+import { KeyDecisionDiagram } from '../components/case-study/KeyDecisionDiagrams'
+import PorvenixSolutionSection from '../components/case-study/PorvenixSolutionSection'
 import SectionBackdrop from '../components/portfolio/SectionBackdrop'
 
 // ── Shared layout tokens (match site: px-6 py-24, max-w-6xl) ────────────────
@@ -98,7 +101,7 @@ const PORVENIX_CONTEXT = {
   roleItems: [
     'Sole product designer — owned interaction design and IA end-to-end',
     'Designed the four-card market system and three-tier navigation architecture from scratch, with no existing design system to build from',
-    'Ran user research independently (interviews, usability sessions)',
+    'Led design decisions through competitor analysis and cross-functional team review',
     'Collaborated with 1 PM, 1 tech lead, 3 engineers (1 frontend, 2 backend), 1 QA',
   ],
   constraints: [
@@ -113,33 +116,6 @@ const PORVENIX_TEAM_CHIPS = [
   '1 Tech Lead',
   '3 Engineers (1 Frontend, 2 Backend)',
   '1 QA',
-] as const
-
-const PORVENIX_SOLUTION: {
-  caption: string
-  src: string | null
-  placeholder: string | null
-}[] = [
-  {
-    caption: 'Low-fi market browse structure',
-    src: null,
-    placeholder: '[Add screenshot: low-fi wireframe]',
-  },
-  {
-    caption: 'Tokens and components before paint',
-    src: null,
-    placeholder: '[Add screenshot: design system tokens/components]',
-  },
-  {
-    caption: 'Logged-in market feed',
-    src: '/porvenix-card-hero.png',
-    placeholder: null,
-  },
-  {
-    caption: 'High-fidelity product UI',
-    src: '/porvenix-case-hero.png',
-    placeholder: null,
-  },
 ] as const
 
 const PORVENIX_PROBLEM = {
@@ -171,19 +147,19 @@ const IA_STEPS = [
     number: '01',
     label: 'Discover',
     choice: 'Collapsed a seven-step onboarding flow into three progressive screens.',
-    why: 'User interviews showed drop-off clustered at steps three and five. Progressive disclosure kept core tasks intact while removing redundant confirmation screens.',
+    why: 'Competitor analysis and team review flagged the multi-step flow as a likely drop-off risk, particularly around redundant confirmation steps. Progressive disclosure kept core tasks intact while cutting the extras.',
   },
   {
     number: '02',
     label: 'Decide',
     choice: 'Defaulted to a single primary action per screen instead of dual CTAs.',
-    why: 'Usability sessions revealed decision paralysis when two equally weighted buttons appeared above the fold. One action reduced time-on-task in prototype testing.',
+    why: 'Competitor review and team discussion pointed to decision paralysis as a risk when two equally weighted buttons compete above the fold. One clear action kept the flow decisive.',
   },
   {
     number: '03',
     label: 'Act',
-    choice: 'Moved account verification to after first value moment.',
-    why: 'Analytics showed users abandoned before experiencing core product value. Deferring verification increased completion of the first meaningful action.',
+    choice: 'Moved account verification to after the first value moment.',
+    why: "The team judged that requiring verification before a user saw any markets would add friction before they experienced the product's core value — so verification was deferred until after that first meaningful interaction.",
   },
 ] as const
 
@@ -345,11 +321,15 @@ function ProblemSpaceSection({
   body,
   number = '02',
   title = 'The Problem Space',
+  aside,
+  below,
 }: {
   hook?: string
   body?: readonly string[]
   number?: string
   title?: string
+  aside?: ReactNode
+  below?: ReactNode
 }) {
   const paragraphs = body ?? [
     PLACEHOLDER.problemBody,
@@ -365,28 +345,46 @@ function ProblemSpaceSection({
           {hook}
         </p>
 
-        <div className="grid grid-cols-1 items-start gap-12 overflow-visible lg:grid-cols-12">
-          <div className="lg:col-span-7">
-            {paragraphs.map((paragraph, index) => (
-              <p
-                key={paragraph}
-                className={`text-base leading-relaxed text-zinc-500${index > 0 ? ' mt-4' : ''}`}
-              >
-                {paragraph}
-              </p>
-            ))}
-          </div>
-
-          <aside className="overflow-visible lg:col-span-5">
-            <OffsetCard innerClassName="bg-blue-600 p-8" shadowClassName="bg-black">
-              <blockquote>
-                <p className="text-sm font-semibold uppercase leading-relaxed tracking-wide text-white">
-                  {PLACEHOLDER.pullQuote}
+        {below ? (
+          <>
+            <div className="max-w-3xl">
+              {paragraphs.map((paragraph, index) => (
+                <p
+                  key={paragraph}
+                  className={`text-base leading-relaxed text-zinc-500${index > 0 ? ' mt-4' : ''}`}
+                >
+                  {paragraph}
                 </p>
-              </blockquote>
-            </OffsetCard>
-          </aside>
-        </div>
+              ))}
+            </div>
+            <div className="mt-10">{below}</div>
+          </>
+        ) : (
+          <div className="grid grid-cols-1 items-start gap-12 overflow-visible lg:grid-cols-12">
+            <div className="lg:col-span-7">
+              {paragraphs.map((paragraph, index) => (
+                <p
+                  key={paragraph}
+                  className={`text-base leading-relaxed text-zinc-500${index > 0 ? ' mt-4' : ''}`}
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+
+            <aside className="overflow-visible lg:col-span-5">
+              {aside ?? (
+                <OffsetCard innerClassName="bg-blue-600 p-8" shadowClassName="bg-black">
+                  <blockquote>
+                    <p className="text-sm font-semibold uppercase leading-relaxed tracking-wide text-white">
+                      {PLACEHOLDER.pullQuote}
+                    </p>
+                  </blockquote>
+                </OffsetCard>
+              )}
+            </aside>
+          </div>
+        )}
       </div>
     </section>
   )
@@ -791,7 +789,7 @@ function PorvenixKeyDecisions() {
           Key product decisions
         </p>
         <p className="mb-10 text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
-          Based on 12 interviews, usability sessions, and analytics review
+          Informed by competitor analysis and cross-functional team review
         </p>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -803,6 +801,7 @@ function PorvenixKeyDecisions() {
               <p className="mt-4 text-sm font-semibold leading-relaxed text-zinc-900">
                 {step.choice} {step.why}
               </p>
+              <KeyDecisionDiagram stepNumber={step.number} />
             </OffsetCard>
           ))}
         </div>
@@ -817,33 +816,10 @@ function PorvenixSolution() {
       <div className={CONTENT}>
         <CaseStudySectionLabel number="04" title="The Solution" />
         <p id="solution-heading" className="sr-only">
-          From wireframe to high-fidelity
+          High-fidelity product screens and design reasoning
         </p>
 
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {PORVENIX_SOLUTION.map(stage => (
-            <figure key={stage.caption}>
-              {stage.src ? (
-                <OffsetCard>
-                  <img
-                    src={stage.src}
-                    alt={stage.caption}
-                    className="block aspect-[4/5] h-auto w-full object-cover object-top"
-                  />
-                </OffsetCard>
-              ) : (
-                <ImagePlaceholder
-                  label={stage.placeholder ?? ''}
-                  ariaLabel={stage.placeholder ?? stage.caption}
-                  className="aspect-[4/5] w-full bg-zinc-100"
-                />
-              )}
-              <figcaption className="mt-3 text-xs font-medium uppercase tracking-widest text-zinc-400">
-                {stage.caption}
-              </figcaption>
-            </figure>
-          ))}
-        </div>
+        <PorvenixSolutionSection />
       </div>
     </section>
   )
@@ -928,6 +904,7 @@ export default function CaseStudyTemplate() {
             {...PORVENIX_PROBLEM}
             number="02"
             title="The Problem"
+            below={<ProblemComparisonDiagram />}
           />
           <PorvenixKeyDecisions />
           <PorvenixSolution />
