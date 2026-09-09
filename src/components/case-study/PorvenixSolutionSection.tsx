@@ -1,19 +1,31 @@
 import { type ReactNode } from 'react'
 
-const FRAME_CLASS =
-  'overflow-hidden rounded-2xl border-2 border-black'
+const FRAME_CLASS = 'overflow-hidden rounded-2xl border-2 border-black'
 
-const SCREENSHOT_MAX_HEIGHT = 520
+/** Cap display height while preserving intrinsic aspect ratio (no stretch/upscale). */
+const SCREENSHOT_MAX_HEIGHT_PX = 720
 
 const INTRO =
   'Every screen here was designed directly in high fidelity — no separate wireframe phase — using Cursor as an AI-assisted workflow, compressed into the six-week deadline.'
 
-const DISCOVERING_A_MARKET = [
+type SolutionScreen = {
+  number: string
+  src: string
+  alt: string
+  caption: string
+  reasoning: string
+  width: number
+  height: number
+}
+
+const DISCOVERING_A_MARKET: SolutionScreen[] = [
   {
     number: '01',
     src: '/porvenix-solution-market-feed.png',
     alt: 'Porvenix market feed showing a grid of prediction market cards',
     caption: 'Market feed (grid of cards)',
+    width: 2880,
+    height: 1556,
     reasoning:
       'The four-card system — binary, multi-outcome, head-to-head, and price-threshold — lets one layout handle everything from a coin flip to a 50-candidate election without forcing every market into the same shape.',
   },
@@ -24,12 +36,16 @@ const DISCOVERING_A_MARKET = [
     caption: 'Navigation tiers',
     reasoning:
       'Three navigation tiers — categories, trending tags, individual markets — let a casual user browse by topic without ever seeing an order book.',
+    width: 2880,
+    height: 322,
   },
   {
     number: '03',
     src: '/porvenix-solution-featured-market.png',
     alt: 'Porvenix featured market card with odds chart visible before login',
     caption: 'Featured market with odds chart',
+    width: 2880,
+    height: 1204,
     reasoning:
       "A market's full odds history and price chart are visible before login — the platform's deepest data is the most public, not the most gated, so a visitor can evaluate a market before ever creating an account.",
   },
@@ -40,6 +56,8 @@ const DISCOVERING_A_MARKET = [
     caption: 'Login/auth gate modal',
     reasoning:
       "Browsing and odds stay fully open — no login required. Identity is only requested when someone moves toward actually trading, and the product launched referral-gated on top of that, deliberately limiting early access rather than opening to everyone at once. Friction is layered by intent: look freely, log in when you're ready to act, unlock trading once invited.",
+    width: 2880,
+    height: 1624,
   },
   {
     number: '05',
@@ -48,24 +66,47 @@ const DISCOVERING_A_MARKET = [
     caption: '"Live now" / "Hot today" sidebar',
     reasoning:
       'With no backend support for real-time odds, trending and live-activity signals surface momentum without needing push updates — turning a technical constraint into a visible design decision instead of hiding it.',
+    width: 698,
+    height: 706,
   },
-] as const
+]
 
-const PLACING_A_BET_SCREENSHOT = {
+const PLACING_A_BET_SCREENSHOT: SolutionScreen = {
   number: '01',
   src: '/porvenix-solution-referral-modal.png',
   alt: 'Porvenix referral code modal gating trading access',
   caption: 'Referral code modal',
   reasoning:
     'Access launched referral-gated rather than open to everyone — a deliberate rollout decision, not a technical limitation.',
-} as const
+  width: 2880,
+  height: 1624,
+}
 
-const PLACING_A_BET_PLACEHOLDERS = [
-  { number: '02', label: '[Add screenshot: selecting a side]' },
-  { number: '03', label: '[Add screenshot: bet slip / amount entry]' },
-  { number: '04', label: '[Add screenshot: confirm step]' },
-  { number: '05', label: '[Add screenshot: post-bet state]' },
-] as const
+const PLACING_A_BET_SCREENSHOTS: SolutionScreen[] = [
+  {
+    number: '02',
+    src: '/porvenix-solution-quick-bet-modal.png',
+    alt: 'Porvenix quick-bet modal triggered from a homepage market card',
+    caption: 'Quick-bet modal from feed',
+    width: 2880,
+    height: 1494,
+    reasoning:
+      'A bet can be placed directly from the feed without opening the market\'s own page — selecting Yes/No and an amount surfaces the same buy logic inline, for users who already know what they want.',
+  },
+  {
+    number: '03',
+    src: '/porvenix-solution-market-detail.png',
+    alt: 'Porvenix market detail page with price chart and buy panel',
+    caption: 'Market detail with buy panel',
+    reasoning:
+      'The same buy action is also available from the market\'s detail page, alongside the full price chart — for users who want context before committing. Both paths converge on identical logic: price, amount, potential return, and a funding gate before confirmation.',
+    width: 2880,
+    height: 1558,
+  },
+]
+
+const PLACING_A_BET_CLOSING =
+  'Completing an actual trade requires a funded account, which fell outside what could be captured for this case study.'
 
 function SolutionSubLabel({ children }: { children: string }) {
   return (
@@ -91,37 +132,73 @@ function SolutionStepLabel({ number, caption }: { number: string; caption: strin
   )
 }
 
-function SolutionScreenshotFrame({ src, alt }: { src: string; alt: string }) {
+function getScreenshotFrameWidth(width: number, height: number) {
+  const maxWidthAtHeightCap = (SCREENSHOT_MAX_HEIGHT_PX * width) / height
+  return Math.min(width, maxWidthAtHeightCap)
+}
+
+function SolutionScreenshotFrame({
+  src,
+  alt,
+  width,
+  height,
+}: {
+  src: string
+  alt: string
+  width: number
+  height: number
+}) {
+  const frameWidth = getScreenshotFrameWidth(width, height)
+
   return (
-    <div className={`${FRAME_CLASS} bg-black`}>
-      <div
-        className="flex w-full items-center justify-center bg-black"
-        style={{ maxHeight: SCREENSHOT_MAX_HEIGHT }}
-      >
+    <div className="flex w-full justify-center">
+      <div className={`${FRAME_CLASS} inline-block max-w-full bg-black`}>
         <img
           src={src}
           alt={alt}
-          className="block h-auto w-auto max-h-[520px] max-w-full object-contain"
+          width={width}
+          height={height}
+          className="block h-auto max-w-full"
+          style={{
+            width: `min(100%, ${frameWidth}px)`,
+            aspectRatio: `${width} / ${height}`,
+          }}
+          loading="lazy"
+          decoding="async"
         />
       </div>
     </div>
   )
 }
 
-function SolutionPlaceholderFrame({ label }: { label: string }) {
+function SolutionCaption({
+  number,
+  caption,
+  reasoning,
+  alignRight = false,
+}: {
+  number: string
+  caption: string
+  reasoning?: string
+  alignRight?: boolean
+}) {
   return (
-    <div className={`${FRAME_CLASS} bg-zinc-100`}>
-      <div
-        role="img"
-        aria-label={label}
-        className="flex min-h-[14rem] w-full items-center justify-center px-6"
-        style={{ maxHeight: SCREENSHOT_MAX_HEIGHT }}
-      >
-        <span className="text-center text-xs font-medium uppercase tracking-widest text-zinc-500">
-          {label}
-        </span>
-      </div>
-    </div>
+    <figcaption
+      className={`mt-8 max-w-3xl ${alignRight ? 'ml-auto text-right' : ''}`}
+    >
+      <SolutionStepLabel number={number} caption={caption} />
+      {reasoning ? (
+        <blockquote
+          className={`mt-6 text-base font-semibold leading-relaxed text-zinc-800 sm:text-lg ${
+            alignRight
+              ? 'border-r-[3px] border-orange-500 pr-5'
+              : 'border-l-[3px] border-orange-500 pl-5'
+          }`}
+        >
+          {reasoning}
+        </blockquote>
+      ) : null}
+    </figcaption>
   )
 }
 
@@ -131,47 +208,19 @@ function SolutionShowcaseRow({
   alt,
   caption,
   reasoning,
-  reverse = false,
-}: {
-  number: string
-  src: string
-  alt: string
-  caption: string
-  reasoning: string
-  reverse?: boolean
-}) {
+  width,
+  height,
+  alignRight = false,
+}: SolutionScreen & { alignRight?: boolean }) {
   return (
-    <figure className="mb-20 grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-12">
-      <div className={`min-w-0 w-full ${reverse ? 'lg:order-2' : 'lg:order-1'}`}>
-        <SolutionScreenshotFrame src={src} alt={alt} />
-      </div>
-      <figcaption className={`min-w-0 lg:pt-2 ${reverse ? 'lg:order-1' : 'lg:order-2'}`}>
-        <SolutionStepLabel number={number} caption={caption} />
-        <blockquote className="mt-6 border-l-[3px] border-orange-500 pl-5 text-base font-semibold leading-relaxed text-zinc-800">
-          {reasoning}
-        </blockquote>
-      </figcaption>
-    </figure>
-  )
-}
-
-function SolutionPlaceholderRow({
-  number,
-  label,
-  reverse = false,
-}: {
-  number: string
-  label: string
-  reverse?: boolean
-}) {
-  return (
-    <figure className="mb-20 grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-12">
-      <div className={`min-w-0 w-full ${reverse ? 'lg:order-2' : 'lg:order-1'}`}>
-        <SolutionPlaceholderFrame label={label} />
-      </div>
-      <figcaption className={`min-w-0 lg:pt-2 ${reverse ? 'lg:order-1' : 'lg:order-2'}`}>
-        <SolutionStepLabel number={number} caption={label} />
-      </figcaption>
+    <figure className="mb-24 w-full">
+      <SolutionScreenshotFrame src={src} alt={alt} width={width} height={height} />
+      <SolutionCaption
+        number={number}
+        caption={caption}
+        reasoning={reasoning}
+        alignRight={alignRight}
+      />
     </figure>
   )
 }
@@ -208,7 +257,7 @@ export default function PorvenixSolutionSection() {
         subLabel="No login required to browse."
       >
         {DISCOVERING_A_MARKET.map((item, index) => (
-          <SolutionShowcaseRow key={item.src} {...item} reverse={index % 2 === 1} />
+          <SolutionShowcaseRow key={item.src} {...item} alignRight={index % 2 === 1} />
         ))}
       </SolutionSubsection>
 
@@ -216,16 +265,19 @@ export default function PorvenixSolutionSection() {
         title="Placing a bet"
         subLabel="The core flow, once a user is in."
       >
-        <SolutionShowcaseRow {...PLACING_A_BET_SCREENSHOT} reverse={false} />
+        <SolutionShowcaseRow {...PLACING_A_BET_SCREENSHOT} />
 
-        {PLACING_A_BET_PLACEHOLDERS.map((item, index) => (
-          <SolutionPlaceholderRow
-            key={item.label}
-            number={item.number}
-            label={item.label}
-            reverse={(index + 1) % 2 === 1}
+        {PLACING_A_BET_SCREENSHOTS.map((item, index) => (
+          <SolutionShowcaseRow
+            key={item.src}
+            {...item}
+            alignRight={(index + 1) % 2 === 1}
           />
         ))}
+
+        <p className="mt-2 max-w-3xl text-sm italic leading-relaxed text-zinc-500">
+          {PLACING_A_BET_CLOSING}
+        </p>
       </SolutionSubsection>
     </>
   )
