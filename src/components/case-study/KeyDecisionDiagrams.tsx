@@ -294,6 +294,57 @@ function FlowArrow({ accent = false }: { accent?: boolean }) {
   )
 }
 
+function StreakDiagram() {
+  return (
+    <div style={{ marginTop: 24, width: 'fit-content' }}>
+      <BeforeLabel />
+
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          width: 'fit-content',
+          marginTop: 10,
+        }}
+      >
+        <ActChip label="Opens app" />
+      </div>
+
+      <div style={{ marginTop: 20, width: 'fit-content' }}>
+        <AfterLabel />
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            width: 'fit-content',
+            marginTop: 10,
+            flexWrap: 'wrap',
+          }}
+        >
+          <ActChip label="Opens app" />
+          <FlowArrow accent />
+          <ActChip label="Trades $10+" accent />
+        </div>
+
+        <p
+          style={{
+            margin: '10px 0 0',
+            fontSize: 10,
+            fontWeight: 700,
+            color: '#EA580C',
+            letterSpacing: '0.04em',
+          }}
+        >
+          🔥 Day 1 → Day 7
+        </p>
+      </div>
+    </div>
+  )
+}
+
 function ActDiagram() {
   return (
     <div style={{ marginTop: 24, width: 'fit-content' }}>
@@ -346,6 +397,8 @@ export function KeyDecisionDiagram({ stepNumber }: { stepNumber: string }) {
       return <DecideDiagram />
     case '03':
       return <ActDiagram />
+    case '04':
+      return <StreakDiagram />
     default:
       return null
   }

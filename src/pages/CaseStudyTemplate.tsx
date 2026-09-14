@@ -880,22 +880,29 @@ function PorvenixImpact() {
           <VisitPorvenixLink />
         </div>
 
-        <div className="mb-12 mx-auto max-w-[65ch] text-center">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-zinc-400">
-            Honest Reflection
-          </p>
-          <p className="text-base leading-relaxed text-zinc-500">{PORVENIX_REFLECTION}</p>
-        </div>
-
-        <div className="flex justify-center">
-          <BrutalistButton
-            type="button"
-            className="px-10 py-4 text-xs uppercase tracking-wider"
-            onClick={() => window.open('/porvenix-mockup.png', '_blank')}
-          >
-            Download Case Study
-          </BrutalistButton>
-        </div>
+        <OffsetCard innerClassName="bg-[#fcfbfa] p-0">
+          <article className="relative p-8 md:p-10">
+            <div
+              className="absolute bottom-0 left-0 top-0 w-1 bg-orange-500"
+              aria-hidden="true"
+            />
+            <p className="pl-5 text-[10px] font-semibold uppercase tracking-widest text-orange-500">
+              Honest Reflection
+            </p>
+            <p className="mt-4 max-w-[65ch] pl-5 text-base leading-relaxed text-zinc-700">
+              {PORVENIX_REFLECTION}
+            </p>
+            <div className="mt-8 border-t-2 border-black/10 pl-5 pt-6">
+              <BrutalistButton
+                type="button"
+                className="px-8 py-3 text-xs uppercase tracking-wider"
+                onClick={() => window.open('/porvenix-mockup.png', '_blank')}
+              >
+                Download Case Study
+              </BrutalistButton>
+            </div>
+          </article>
+        </OffsetCard>
       </div>
     </section>
   )
@@ -913,8 +920,12 @@ function PorvenixKeyDecisions() {
           Informed by competitor analysis and cross-functional team review
         </p>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {IA_STEPS.map(step => (
+        <p className="mb-6 max-w-4xl text-[11px] font-semibold uppercase leading-relaxed tracking-widest text-zinc-400">
+          {PORVENIX_POST_LAUNCH_ITERATION_LABEL}
+        </p>
+
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {[...IA_STEPS, PORVENIX_STREAK_DECISION].map(step => (
             <OffsetCard key={step.number} innerClassName="flex flex-col bg-[#fcfbfa] p-6 md:p-8">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-blue-600">
                 {step.number} {step.label}
@@ -925,21 +936,6 @@ function PorvenixKeyDecisions() {
               <KeyDecisionDiagram stepNumber={step.number} />
             </OffsetCard>
           ))}
-        </div>
-
-        <p className="mt-8 max-w-4xl text-[11px] font-semibold uppercase leading-relaxed tracking-widest text-zinc-400">
-          {PORVENIX_POST_LAUNCH_ITERATION_LABEL}
-        </p>
-
-        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <OffsetCard innerClassName="flex flex-col bg-[#fcfbfa] p-6 md:p-8">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-blue-600">
-              {PORVENIX_STREAK_DECISION.number} {PORVENIX_STREAK_DECISION.label}
-            </p>
-            <p className="mt-4 text-base font-semibold leading-relaxed text-zinc-900">
-              {PORVENIX_STREAK_DECISION.choice} {PORVENIX_STREAK_DECISION.why}
-            </p>
-          </OffsetCard>
         </div>
       </div>
     </section>
@@ -963,6 +959,43 @@ function PorvenixSolution() {
 
 // ── Nav ─────────────────────────────────────────────────────────────────────
 
+function CaseStudyNavLink({
+  to,
+  direction,
+  name,
+}: {
+  to: string
+  direction: 'prev' | 'next'
+  name: string
+}) {
+  const isPrev = direction === 'prev'
+
+  return (
+    <Link
+      to={to}
+      className={`group flex min-w-0 flex-1 items-center gap-4 rounded-2xl border-2 border-black bg-[#fcfbfa] p-5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-transform hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 ${
+        isPrev ? 'flex-row' : 'flex-row-reverse text-right'
+      }`}
+      aria-label={`${isPrev ? 'Previous' : 'Next'} project: ${name}`}
+    >
+      <span
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-black bg-white font-mono text-sm font-bold text-zinc-900 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-colors group-hover:bg-blue-600 group-hover:text-white"
+        aria-hidden="true"
+      >
+        {isPrev ? '←' : '→'}
+      </span>
+      <span className="min-w-0">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+          {isPrev ? 'Prev Project' : 'Next Project'}
+        </p>
+        <p className="mt-1 truncate text-base font-semibold text-zinc-900 group-hover:text-blue-600">
+          {name}
+        </p>
+      </span>
+    </Link>
+  )
+}
+
 function CaseStudyNav({
   prevSlug,
   prevName,
@@ -977,23 +1010,12 @@ function CaseStudyNav({
   const navigate = useNavigate()
 
   return (
-    <nav className={SECTION} aria-label="Case study project navigation">
+    <nav className="border-t-2 border-black py-16 md:py-20" aria-label="Case study project navigation">
       <div className={CONTENT}>
-        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[1fr_auto_1fr]">
-          <Link
-            to={`/work/${prevSlug}`}
-            className="rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
-            aria-label={`Previous project: ${prevName}`}
-          >
-            <OffsetCard innerClassName="bg-[#fcfbfa] p-6">
-              <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
-                ← Prev Project
-              </p>
-              <p className="mt-2 text-lg font-semibold text-zinc-900">{prevName}</p>
-            </OffsetCard>
-          </Link>
+        <div className="flex flex-col items-stretch gap-4 lg:flex-row lg:items-center">
+          <CaseStudyNavLink to={`/work/${prevSlug}`} direction="prev" name={prevName} />
 
-          <div className="flex justify-center">
+          <div className="flex shrink-0 justify-center lg:px-2">
             <BrutalistButton
               type="button"
               onClick={() => navigate('/projects')}
@@ -1003,18 +1025,7 @@ function CaseStudyNav({
             </BrutalistButton>
           </div>
 
-          <Link
-            to={`/work/${nextSlug}`}
-            className="rounded-2xl text-right focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
-            aria-label={`Next project: ${nextName}`}
-          >
-            <OffsetCard innerClassName="bg-[#fcfbfa] p-6">
-              <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
-                Next Project →
-              </p>
-              <p className="mt-2 text-lg font-semibold text-zinc-900">{nextName}</p>
-            </OffsetCard>
-          </Link>
+          <CaseStudyNavLink to={`/work/${nextSlug}`} direction="next" name={nextName} />
         </div>
       </div>
     </nav>
