@@ -110,12 +110,7 @@ const PLACING_A_BET_CLOSING =
 
 function SolutionSubLabel({ children }: { children: string }) {
   return (
-    <p className="mb-12 flex items-center gap-3">
-      <span className="block h-3 w-3 shrink-0 rounded-sm bg-orange-500" aria-hidden="true" />
-      <span className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
-        {children}
-      </span>
-    </p>
+    <p className="mt-2 font-sans text-sm leading-relaxed text-zinc-500">{children}</p>
   )
 }
 
@@ -175,25 +170,17 @@ function SolutionCaption({
   number,
   caption,
   reasoning,
-  alignRight = false,
 }: {
   number: string
   caption: string
   reasoning?: string
-  alignRight?: boolean
 }) {
   return (
-    <figcaption
-      className={`mt-8 max-w-3xl ${alignRight ? 'ml-auto text-right' : ''}`}
-    >
+    <figcaption className="mt-8 w-full">
       <SolutionStepLabel number={number} caption={caption} />
       {reasoning ? (
         <blockquote
-          className={`mt-6 text-base font-semibold leading-relaxed text-zinc-800 sm:text-lg ${
-            alignRight
-              ? 'border-r-[3px] border-orange-500 pr-5'
-              : 'border-l-[3px] border-orange-500 pl-5'
-          }`}
+          className="mt-6 w-full border-l-[3px] border-orange-500 pl-5 text-base font-semibold leading-relaxed text-zinc-800 sm:text-lg"
         >
           {reasoning}
         </blockquote>
@@ -210,17 +197,11 @@ function SolutionShowcaseRow({
   reasoning,
   width,
   height,
-  alignRight = false,
-}: SolutionScreen & { alignRight?: boolean }) {
+}: SolutionScreen) {
   return (
     <figure className="mb-24 w-full">
       <SolutionScreenshotFrame src={src} alt={alt} width={width} height={height} />
-      <SolutionCaption
-        number={number}
-        caption={caption}
-        reasoning={reasoning}
-        alignRight={alignRight}
-      />
+      <SolutionCaption number={number} caption={caption} reasoning={reasoning} />
     </figure>
   )
 }
@@ -236,10 +217,10 @@ function SolutionSubsection({
 }) {
   return (
     <div className="mt-20 border-t-2 border-zinc-200 pt-16 first:mt-0 first:border-t-0 first:pt-0">
-      <h3 className="mb-6 text-xl font-semibold tracking-tight text-zinc-900 md:text-2xl">
-        {title}
-      </h3>
-      <SolutionSubLabel>{subLabel}</SolutionSubLabel>
+      <div className="mb-12">
+        <h3 className="text-xl font-semibold tracking-tight text-zinc-900 md:text-2xl">{title}</h3>
+        <SolutionSubLabel>{subLabel}</SolutionSubLabel>
+      </div>
       {children}
     </div>
   )
@@ -248,7 +229,7 @@ function SolutionSubsection({
 export default function PorvenixSolutionSection() {
   return (
     <>
-      <p className="mb-6 max-w-3xl text-lg font-semibold leading-relaxed text-zinc-900">
+      <p className="mb-6 w-full text-lg font-semibold leading-relaxed text-zinc-900">
         {INTRO}
       </p>
 
@@ -256,8 +237,8 @@ export default function PorvenixSolutionSection() {
         title="Discovering a market"
         subLabel="No login required to browse."
       >
-        {DISCOVERING_A_MARKET.map((item, index) => (
-          <SolutionShowcaseRow key={item.src} {...item} alignRight={index % 2 === 1} />
+        {DISCOVERING_A_MARKET.map(item => (
+          <SolutionShowcaseRow key={item.src} {...item} />
         ))}
       </SolutionSubsection>
 
@@ -267,17 +248,24 @@ export default function PorvenixSolutionSection() {
       >
         <SolutionShowcaseRow {...PLACING_A_BET_SCREENSHOT} />
 
-        {PLACING_A_BET_SCREENSHOTS.map((item, index) => (
-          <SolutionShowcaseRow
-            key={item.src}
-            {...item}
-            alignRight={(index + 1) % 2 === 1}
-          />
+        {PLACING_A_BET_SCREENSHOTS.map(item => (
+          <SolutionShowcaseRow key={item.src} {...item} />
         ))}
 
-        <p className="mt-2 max-w-3xl text-sm italic leading-relaxed text-zinc-500">
-          {PLACING_A_BET_CLOSING}
-        </p>
+        <div
+          role="note"
+          className="mt-10 flex w-full gap-3 rounded-2xl border-2 border-black bg-[#fcfbfa] p-5 md:p-6"
+        >
+          <span
+            className="mt-0.5 shrink-0 text-base leading-none text-zinc-500"
+            aria-hidden="true"
+          >
+            ⓘ
+          </span>
+          <p className="font-sans text-base font-normal leading-relaxed text-zinc-800">
+            {PLACING_A_BET_CLOSING}
+          </p>
+        </div>
       </SolutionSubsection>
     </>
   )

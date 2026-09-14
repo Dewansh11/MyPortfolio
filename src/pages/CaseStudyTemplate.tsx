@@ -18,6 +18,45 @@ const PILL =
 const META_PILL =
   'rounded-full border-2 border-black bg-black px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-wide text-white'
 
+const PORVENIX_LIVE_URL = 'https://porvenix.com/'
+
+const PORVENIX_REFLECTION =
+  "If I had more time and access to a dedicated researcher, I'd have validated these decisions with real user interviews and usability testing instead of relying on competitor analysis and team judgment alone. The decisions held up once the product shipped, but they were informed guesses, not tested ones — and that's the gap I'd close first with more runway."
+
+const PORVENIX_POST_LAUNCH_ITERATION_LABEL =
+  'POST-LAUNCH ITERATION — based on real usage data after launch. (Notifications also shipped at this stage, following established patterns from Polymarket and Kalshi — not a distinct design decision.)'
+
+const PORVENIX_STREAK_DECISION = {
+  number: '04',
+  label: 'Streak',
+  choice:
+    'Added a daily streak tied to hitting a $10 trading-volume threshold, not just opening the app.',
+  why:
+    'Early usage data showed users logging in without trading — rewarding volume instead of visits targeted the actual behavior the product needed, not a vanity metric.',
+} as const
+
+const PORVENIX_IMPACT_STATS = [
+  { value: '40-50%', label: 'of users return daily' },
+  { value: '5% → 15%', label: 'new-user engagement growth over time' },
+  { value: '~60%', label: 'returning user retention' },
+] as const
+
+const PORVENIX_STAT_CHIP =
+  'flex flex-col justify-center rounded-2xl border-2 border-black bg-[#fcfbfa] p-5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:p-6'
+
+function VisitPorvenixLink({ className = '' }: { className?: string }) {
+  return (
+    <a
+      href={PORVENIX_LIVE_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`inline-flex shrink-0 items-center rounded-full border-2 border-black bg-[#fcfbfa] px-3 py-1 font-mono text-[11px] font-bold tracking-wide text-zinc-900 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-colors hover:bg-zinc-100 ${className}`}
+    >
+      Visit Porvenix ↗
+    </a>
+  )
+}
+
 // ── Placeholder copy — replace before publishing ──────────────────────────────
 
 const STUDIES = {
@@ -217,19 +256,29 @@ function HeroMockup({
   title,
   meta,
   heroSrc,
+  titleClassName,
+  showVisitLink = false,
 }: {
   title: string
   meta: string
   heroSrc: string
+  titleClassName?: string
+  showVisitLink?: boolean
 }) {
   return (
     <header className="w-full">
       <div className={`${CONTENT} pb-12 pt-10 md:pb-16 md:pt-14`}>
-        <h1 className="max-w-4xl text-4xl font-semibold leading-tight tracking-tight text-zinc-900 lg:text-5xl">
+        <h1
+          className={
+            titleClassName ??
+            'max-w-4xl text-4xl font-semibold leading-tight tracking-tight text-zinc-900 lg:text-5xl'
+          }
+        >
           {title}
         </h1>
-        <p className="mt-5">
+        <p className="mt-5 flex flex-wrap items-center gap-3">
           <span className={META_PILL}>{meta}</span>
+          {showVisitLink ? <VisitPorvenixLink /> : null}
         </p>
 
         <div className="mt-10">
@@ -323,6 +372,7 @@ function ProblemSpaceSection({
   title = 'The Problem Space',
   aside,
   below,
+  hookClassName,
 }: {
   hook?: string
   body?: readonly string[]
@@ -330,6 +380,7 @@ function ProblemSpaceSection({
   title?: string
   aside?: ReactNode
   below?: ReactNode
+  hookClassName?: string
 }) {
   const paragraphs = body ?? [
     PLACEHOLDER.problemBody,
@@ -341,7 +392,12 @@ function ProblemSpaceSection({
       <div className={CONTENT}>
         <CaseStudySectionLabel number={number} title={title} />
 
-        <p className="mb-12 max-w-4xl text-2xl font-semibold leading-snug tracking-tight text-black lg:text-3xl">
+        <p
+          className={
+            hookClassName ??
+            'mb-12 max-w-4xl text-2xl font-semibold leading-snug tracking-tight text-black lg:text-3xl'
+          }
+        >
           {hook}
         </p>
 
@@ -770,11 +826,76 @@ function PorvenixSnapshot() {
                 <p className={decisionNumber}>
                   {String(index + 1).padStart(2, '0')} Constraint
                 </p>
-                <p className="mt-4 text-sm font-semibold leading-relaxed text-zinc-900">{item}</p>
+                <p className="mt-4 text-base font-semibold leading-relaxed text-zinc-900">{item}</p>
               </article>
             </li>
           ))}
         </ul>
+      </div>
+    </section>
+  )
+}
+
+function PorvenixImpact() {
+  return (
+    <section className={SECTION} aria-labelledby="impact-heading">
+      <div className={CONTENT}>
+        <CaseStudySectionLabel number="05" title="Impact & Reflection" />
+
+        <OffsetCard className="mb-8" innerClassName="bg-[#fcfbfa] p-10 md:p-12">
+          <h3
+            id="impact-heading"
+            className="font-sans text-3xl font-semibold leading-tight tracking-tight text-zinc-900 lg:text-4xl"
+          >
+            50,000 users in the first three months — without paid marketing
+          </h3>
+          <p className="mt-6 max-w-3xl text-base leading-relaxed text-zinc-500">
+            Launched from zero, with no prior design system and a fixed delivery deadline.
+          </p>
+        </OffsetCard>
+
+        <div
+          className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:[grid-auto-rows:1fr]"
+          role="list"
+          aria-label="Supporting launch metrics"
+        >
+          {PORVENIX_IMPACT_STATS.map(stat => (
+            <div key={stat.label} role="listitem" className={PORVENIX_STAT_CHIP}>
+              <p className="font-sans text-2xl font-semibold leading-tight tracking-tight text-zinc-900 md:text-3xl">
+                {stat.value}
+              </p>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-widest text-zinc-400">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div
+          className="mb-12 flex flex-col gap-4 rounded-2xl border-2 border-black bg-[#fcfbfa] p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:flex-row sm:items-center sm:justify-between sm:gap-6 md:p-8"
+        >
+          <p className="text-sm font-semibold leading-relaxed text-zinc-800 sm:text-base">
+            Today, Porvenix processes $3.8B+ in trading volume across 14 market categories.
+          </p>
+          <VisitPorvenixLink />
+        </div>
+
+        <div className="mb-12 mx-auto max-w-[65ch] text-center">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-zinc-400">
+            Honest Reflection
+          </p>
+          <p className="text-base leading-relaxed text-zinc-500">{PORVENIX_REFLECTION}</p>
+        </div>
+
+        <div className="flex justify-center">
+          <BrutalistButton
+            type="button"
+            className="px-10 py-4 text-xs uppercase tracking-wider"
+            onClick={() => window.open('/porvenix-mockup.png', '_blank')}
+          >
+            Download Case Study
+          </BrutalistButton>
+        </div>
       </div>
     </section>
   )
@@ -792,18 +913,33 @@ function PorvenixKeyDecisions() {
           Informed by competitor analysis and cross-functional team review
         </p>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {IA_STEPS.map(step => (
             <OffsetCard key={step.number} innerClassName="flex flex-col bg-[#fcfbfa] p-6 md:p-8">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-blue-600">
                 {step.number} {step.label}
               </p>
-              <p className="mt-4 text-sm font-semibold leading-relaxed text-zinc-900">
+              <p className="mt-4 text-base font-semibold leading-relaxed text-zinc-900">
                 {step.choice} {step.why}
               </p>
               <KeyDecisionDiagram stepNumber={step.number} />
             </OffsetCard>
           ))}
+        </div>
+
+        <p className="mt-8 max-w-4xl text-[11px] font-semibold uppercase leading-relaxed tracking-widest text-zinc-400">
+          {PORVENIX_POST_LAUNCH_ITERATION_LABEL}
+        </p>
+
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <OffsetCard innerClassName="flex flex-col bg-[#fcfbfa] p-6 md:p-8">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-blue-600">
+              {PORVENIX_STREAK_DECISION.number} {PORVENIX_STREAK_DECISION.label}
+            </p>
+            <p className="mt-4 text-base font-semibold leading-relaxed text-zinc-900">
+              {PORVENIX_STREAK_DECISION.choice} {PORVENIX_STREAK_DECISION.why}
+            </p>
+          </OffsetCard>
         </div>
       </div>
     </section>
@@ -896,7 +1032,17 @@ export default function CaseStudyTemplate() {
         <SectionBackdrop />
       </div>
       <div className="relative z-10">
-      <HeroMockup title={study.projectTitle} meta={study.heroMeta} heroSrc={study.heroSrc} />
+      <HeroMockup
+        title={study.projectTitle}
+        meta={study.heroMeta}
+        heroSrc={study.heroSrc}
+        showVisitLink={isPorvenix}
+        titleClassName={
+          isPorvenix
+            ? 'max-w-4xl text-[64px] font-bold leading-tight tracking-tight text-zinc-900'
+            : undefined
+        }
+      />
       {isPorvenix ? (
         <>
           <PorvenixSnapshot />
@@ -904,15 +1050,12 @@ export default function CaseStudyTemplate() {
             {...PORVENIX_PROBLEM}
             number="02"
             title="The Problem"
+            hookClassName="mb-12 max-w-4xl text-[38px] font-semibold leading-snug tracking-tight text-black"
             below={<ProblemComparisonDiagram />}
           />
           <PorvenixKeyDecisions />
           <PorvenixSolution />
-          <ImpactRetrospectiveSection
-            number="05"
-            title="Impact & Reflection"
-            oversizedMetrics
-          />
+          <PorvenixImpact />
         </>
       ) : (
         <>
