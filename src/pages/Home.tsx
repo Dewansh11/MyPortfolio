@@ -33,7 +33,7 @@ function CyclingFlipWord({ word }: { word: string }) {
             animate={{ rotateX: 0, opacity: 1 }}
             exit={{ rotateX: -75, opacity: 0 }}
             transition={FLIP_TRANSITION}
-            className="inline-block italic leading-none text-blue-600"
+            className="inline-block font-display font-semibold not-italic leading-none text-blue-600"
             style={{
               transformOrigin: 'center center',
               backfaceVisibility: 'hidden',

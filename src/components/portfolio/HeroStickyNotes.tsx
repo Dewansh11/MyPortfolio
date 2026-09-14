@@ -85,7 +85,7 @@ export default function HeroStickyNotes() {
         >
           <div className="flex items-center gap-2">
             <SelectionIcon />
-            <span className="text-xl font-semibold tracking-tight">Now</span>
+            <span className="text-xl font-semibold uppercase tracking-tight">Currently</span>
           </div>
 
           <div className="inline-flex items-center gap-1.5 self-center rounded-full border-2 border-black bg-white px-3 py-1.5 font-mono text-xs font-bold tracking-tight text-black">
@@ -97,7 +97,7 @@ export default function HeroStickyNotes() {
           </div>
 
           <p className="text-center font-mono text-xs font-bold text-white">
-            Currently at studio.
+            Product Designer at Goldenflitch Studio.
           </p>
         </PopCard>
       </div>
@@ -117,15 +117,15 @@ export default function HeroStickyNotes() {
         >
           <div className="flex items-center gap-2 text-white">
             <SparkIcon />
-            <span className="text-xl font-semibold tracking-tight">Into</span>
+            <span className="text-xl font-semibold uppercase tracking-tight">3 Years</span>
           </div>
 
           <div className="self-center rounded-full border-2 border-black bg-white px-3.5 py-1.5 font-mono text-xs font-bold tracking-tight text-black">
-            vibe coding
+            Design experience
           </div>
 
           <p className="text-center font-mono text-xs font-bold text-white">
-            Fascinated by spatial interfaces.
+            Exploring the new age of AI-driven design.
           </p>
         </PopCard>
       </div>
