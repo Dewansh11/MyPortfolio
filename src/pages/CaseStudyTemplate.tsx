@@ -880,29 +880,24 @@ function PorvenixImpact() {
           <VisitPorvenixLink />
         </div>
 
-        <OffsetCard innerClassName="bg-[#fcfbfa] p-0">
-          <article className="relative p-8 md:p-10">
-            <div
-              className="absolute bottom-0 left-0 top-0 w-1 bg-orange-500"
-              aria-hidden="true"
-            />
-            <p className="pl-5 text-[10px] font-semibold uppercase tracking-widest text-orange-500">
+        <OffsetCard className="mb-12" innerClassName="bg-[#fcfbfa] p-10">
+          <div className="mx-auto max-w-[65ch] text-center">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-zinc-400">
               Honest Reflection
             </p>
-            <p className="mt-4 max-w-[65ch] pl-5 text-base leading-relaxed text-zinc-700">
-              {PORVENIX_REFLECTION}
-            </p>
-            <div className="mt-8 border-t-2 border-black/10 pl-5 pt-6">
-              <BrutalistButton
-                type="button"
-                className="px-8 py-3 text-xs uppercase tracking-wider"
-                onClick={() => window.open('/porvenix-mockup.png', '_blank')}
-              >
-                Download Case Study
-              </BrutalistButton>
-            </div>
-          </article>
+            <p className="text-base leading-relaxed text-zinc-500">{PORVENIX_REFLECTION}</p>
+          </div>
         </OffsetCard>
+
+        <div className="flex justify-center">
+          <BrutalistButton
+            type="button"
+            className="px-10 py-4 text-xs uppercase tracking-wider"
+            onClick={() => window.open('/porvenix-mockup.png', '_blank')}
+          >
+            Download Case Study
+          </BrutalistButton>
+        </div>
       </div>
     </section>
   )
