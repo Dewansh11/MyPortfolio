@@ -13,6 +13,8 @@ export interface ProjectCardData {
   coverImageAlt?: string
   /** Internal route or external URL for the case study */
   href?: string
+  /** Shows Coming Soon state — no link, no hover affordance */
+  comingSoon?: boolean
 }
 
 interface ProjectCardProps extends ProjectCardData {
@@ -44,9 +46,12 @@ export default function ProjectCard({
   coverImage,
   coverImageAlt,
   href,
+  comingSoon = false,
   index = 0,
   stacked = false,
 }: ProjectCardProps) {
+  const isClickable = Boolean(href) && !comingSoon
+
   const card = (
     <motion.article
       initial={stacked ? false : { opacity: 0, y: 24 }}
@@ -62,7 +67,7 @@ export default function ProjectCard({
             }
       }
       whileHover={
-        stacked
+        stacked || !isClickable
           ? undefined
           : {
               x: 6,
@@ -71,7 +76,7 @@ export default function ProjectCard({
             }
       }
       className={`group relative z-10 flex min-h-[320px] flex-col overflow-hidden rounded-2xl border-2 border-black bg-[#fcfbfa] md:flex-row${
-        href ? ' cursor-pointer' : ''
+        isClickable ? ' cursor-pointer' : ''
       }`}
     >
       {/* Left — copy */}
@@ -86,9 +91,15 @@ export default function ProjectCard({
           <h3 className="text-2xl font-semibold leading-tight tracking-tight text-zinc-900 lg:text-3xl">
             {title}
           </h3>
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-zinc-200 text-zinc-400 transition-all duration-200 group-hover:border-zinc-900 group-hover:text-zinc-900">
-            <ArrowUpRight />
-          </span>
+          {comingSoon ? (
+            <span className="shrink-0 rounded-full border-2 border-black bg-zinc-200 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+              Coming Soon
+            </span>
+          ) : (
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-zinc-200 text-zinc-400 transition-all duration-200 group-hover:border-zinc-900 group-hover:text-zinc-900">
+              <ArrowUpRight />
+            </span>
+          )}
         </div>
 
         <p className="text-sm leading-relaxed text-zinc-500 md:text-base">{description}</p>
@@ -129,16 +140,21 @@ export default function ProjectCard({
         className="pointer-events-none absolute inset-0 translate-x-1.5 translate-y-1.5 rounded-2xl border-2 border-black bg-blue-600"
       />
 
-      {href ? (
+      {isClickable ? (
         <Link
-          to={href}
+          to={href!}
           className="relative z-10 block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
           aria-label={`View case study: ${title}`}
         >
           {card}
         </Link>
       ) : (
-        card
+        <div
+          className="relative z-10 block rounded-2xl"
+          aria-label={comingSoon ? `${title} — coming soon` : title}
+        >
+          {card}
+        </div>
       )}
     </div>
   )

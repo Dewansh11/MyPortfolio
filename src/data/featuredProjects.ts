@@ -20,7 +20,7 @@ export const FEATURED_PROJECTS: ProjectCardData[] = [
       'Ran 12 user interviews to find where and why users abandoned a 7-step onboarding flow. Rebuilt around progressive disclosure — 38% drop-off reduction, NPS improved from 22 → 61 in 90 days post-launch.',
     tags: ['UX Research', 'Interaction Design', 'Information Architecture', 'Prototyping'],
     coverClass: 'bg-gradient-to-br from-sky-950 via-blue-900 to-blue-600',
-    href: '/work/onboarding-flow',
+    comingSoon: true,
   },
   {
     title: 'Fintech Design System',
@@ -29,7 +29,7 @@ export const FEATURED_PROJECTS: ProjectCardData[] = [
       'Built a token-based design system from scratch for a fintech platform spanning four product teams — cutting handoff time by 50% and enabling three new products to ship in six weeks.',
     tags: ['Design Systems', 'Figma', 'Component Architecture', 'Documentation'],
     coverClass: 'bg-gradient-to-br from-emerald-950 via-emerald-900 to-emerald-600',
-    href: '/work/fintech-design-system',
+    comingSoon: true,
   },
   {
     title: 'Mobile Banking App',
@@ -38,6 +38,6 @@ export const FEATURED_PROJECTS: ProjectCardData[] = [
       'Redesigned complex financial data from raw numbers into contextual charts, goal tracking, and nudges that explain rather than just display. Daily active usage up 2.4×, "confusion" support tickets dropped 60%.',
     tags: ['Data Visualization', 'Mobile UX', 'User Research', 'Interaction Design'],
     coverClass: 'bg-gradient-to-br from-rose-950 via-rose-800 to-rose-600',
-    href: '/work/mobile-banking',
+    comingSoon: true,
   },
 ]

@@ -185,7 +185,7 @@ export default function Home() {
             transition={{ delay: 0.3, duration: 0.5, ease: 'easeOut' }}
             className="mx-auto mt-6 max-w-md text-base leading-relaxed text-zinc-500"
           >
-            UX Designer focused on research-driven product design, design systems,
+            UX Designer focused on AI-native product design, systems thinking,
             and turning messy problems into clean experiences.
           </motion.p>
 
