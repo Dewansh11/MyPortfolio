@@ -41,7 +41,7 @@ const ID_CARD_QR_TARGET = '/resume'
 
 const ID_CARD_DETAILS = [
   { label: 'ROLE:', value: 'PRODUCT DESIGNER' },
-  { label: 'EXP:', value: '4+ YEARS' },
+  { label: 'EXP:', value: '3 YEARS' },
   { label: 'EDU:', value: 'M.DES · UX DESIGN' },
   { label: 'LOC:', value: 'INDIA · IST' },
 ] as const
