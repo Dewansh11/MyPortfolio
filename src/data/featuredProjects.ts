@@ -14,11 +14,11 @@ export const FEATURED_PROJECTS: ProjectCardData[] = [
     href: '/work/porvenix',
   },
   {
-    title: 'Onboarding Flow Redesign',
-    subtitle: 'B2B SaaS · Interaction Design',
+    title: 'Edme Insurance',
+    subtitle: 'InsurTech · HR Insurance Platform',
     description:
-      'Ran 12 user interviews to find where and why users abandoned a 7-step onboarding flow. Rebuilt around progressive disclosure — 38% drop-off reduction, NPS improved from 22 → 61 in 90 days post-launch.',
-    tags: ['UX Research', 'Interaction Design', 'Information Architecture', 'Prototyping'],
+      'Designing a smarter, simpler HR insurance platform. Edme provides a white-label insurance solution to organizations across India, enabling companies to offer insurance benefits to their employees under their own brand.',
+    tags: ['InsurTech', 'B2C SaaS', 'Dashboard', 'Data Visualization'],
     coverClass: 'bg-gradient-to-br from-sky-950 via-blue-900 to-blue-600',
     comingSoon: true,
   },

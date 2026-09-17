@@ -1,27 +1,33 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { QRCodeSVG } from 'qrcode.react'
 
 // ── Static data ───────────────────────────────────────────────────────────────
 
 const TOOLS = [
-  { name: 'Notion', img: '/logo-figma.png' },
-  { name: 'Claude', img: '/logo-framer.png' },
-  { name: 'Figma', img: '/logo-illustrator.png' },
-  { name: 'Framer', img: '/logo-cursor.png' },
-  { name: 'Cursor', img: '/logo-claude.png' },
-  { name: 'GitHub', img: '/logo-github.png' },
-  { name: 'Illustrator', img: '/logo-notion.png' },
+  { name: 'Cursor', img: '/cursor.png' },
+  { name: 'Figma', img: '/figma.png' },
+  { name: 'Claude', img: '/Claude.png' },
+  { name: 'GitHub', img: '/github.png' },
+  { name: 'Framer', img: '/Framer.png' },
+  { name: 'Illustrator', img: '/Adobe%20illustrator.png' },
+  { name: 'Touch Designer', img: '/TouchDesigner_logo.png' },
+  { name: 'Notion', img: '/Notion.png' },
 ] as const
 
 /** Swap titles, artists, and audio files in /public/audio/ */
 const PLAYLIST_TRACKS = [
-  { id: 'take-five', title: 'Take Five', artist: 'Dave Brubeck Quartet', audioSrc: '/audio/take-five.mp3' },
-  { id: 'so-what', title: 'So What', artist: 'Miles Davis', audioSrc: '/audio/so-what.mp3' },
-  { id: 'autumn-leaves', title: 'Autumn Leaves', artist: 'Cannonball Adderley', audioSrc: '/audio/autumn-leaves.mp3' },
-  { id: 'round-midnight', title: "'Round Midnight", artist: 'Thelonious Monk', audioSrc: '/audio/round-midnight.mp3' },
-  { id: 'track-05', title: 'Coming Soon', artist: '—', audioSrc: '' },
-] as const
+  { id: 'time', title: 'Time', artist: 'Pink Floyd', audioSrc: '/audio/time.mp3', startAt: 5 * 60 + 8 },
+  { id: 'new-person-same-old-mistakes', title: 'New Person, Same Old Mistakes', artist: 'Tame Impala', audioSrc: '/audio/new-person-same-old-mistakes.mp3', startAt: 40 },
+  { id: 'less-than-zero', title: 'Less Than Zero', artist: 'The Weeknd', audioSrc: '/audio/less-than-zero.mp3', startAt: 60 },
+  { id: 'we-on-go', title: 'We On Go', artist: 'BIA', audioSrc: '/audio/we-on-go.mp3' },
+  { id: 'californication', title: 'Californication', artist: 'Red Hot Chili Peppers', audioSrc: '/audio/californication.mp3', startAt: 60 },
+] satisfies ReadonlyArray<{
+  id: string
+  title: string
+  artist: string
+  audioSrc: string
+  startAt?: number
+}>
 
 const PHOTO_FRAMES = [
   { type: 'img' as const, src: '/dewansh.png', alt: 'Portrait', rotate: -3 },
@@ -37,34 +43,18 @@ const PHOTO_SCROLL_W = PHOTO_FRAMES.length * (144 + 16)
 const BRUTAL_CARD =
   'w-full overflow-hidden rounded-2xl border-[3px] border-black bg-[#fcfbfa] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
 
-const ID_CARD_QR_TARGET = '/resume'
-
 const ID_CARD_DETAILS = [
   { label: 'ROLE:', value: 'PRODUCT DESIGNER' },
   { label: 'EXP:', value: '3 YEARS' },
   { label: 'EDU:', value: 'M.DES · UX DESIGN' },
-  { label: 'LOC:', value: 'INDIA · IST' },
+  { label: 'LOC:', value: 'GURUGRAM, INDIA' },
 ] as const
-
-function useIdCardQrUrl(target: string): string {
-  const [url, setUrl] = useState('')
-
-  useEffect(() => {
-    if (target.startsWith('http://') || target.startsWith('https://')) {
-      setUrl(target)
-      return
-    }
-    setUrl(`${window.location.origin}${target.startsWith('/') ? target : `/${target}`}`)
-  }, [target])
-
-  return url
-}
 
 // ── Tools card — always-visible logo grid ─────────────────────────────────────
 
 function ToolsStackCard() {
   return (
-    <article className={`${BRUTAL_CARD} flex h-full flex-col`}>
+    <article className={`${BRUTAL_CARD} flex h-fit w-full flex-col`}>
       <div className="flex items-center justify-between border-b-[3px] border-black bg-blue-600 px-4 py-2.5">
         <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-white">
           Tools I Use
@@ -99,12 +89,10 @@ function ToolsStackCard() {
 // ── ID card — landscape badge ─────────────────────────────────────────────────
 
 function HangingIdCard() {
-  const qrUrl = useIdCardQrUrl(ID_CARD_QR_TARGET)
-
   return (
-    <article id="hanging-id-card" className={`${BRUTAL_CARD} flex h-full flex-col`}>
+    <article id="hanging-id-card" className={`${BRUTAL_CARD} flex h-full w-full flex-col`}>
       {/* Header — name + status */}
-      <div className="flex items-start justify-between gap-3 border-b-[3px] border-black px-4 py-3">
+      <div className="flex shrink-0 items-start justify-between gap-3 border-b-[3px] border-black px-4 py-3">
         <div className="min-w-0">
           <p className="truncate font-mono text-sm font-semibold uppercase tracking-wide text-black">
             Dewansh Saxena
@@ -118,57 +106,30 @@ function HangingIdCard() {
         </span>
       </div>
 
-      {/* Body — photo + details */}
-      <div className="flex flex-1 gap-4 p-4">
-        <img
-          src="/dewansh-id-photo.png"
-          alt="Dewansh Saxena, UX/Product Designer"
-          className="h-auto w-[88px] shrink-0 self-start rounded-xl border-2 border-black object-cover object-bottom sm:w-[96px]"
-          style={{ aspectRatio: '3/4' }}
-          draggable={false}
-        />
+      {/* Body — photo + details fill matched card height */}
+      <div className="flex min-h-0 flex-1 items-stretch gap-5 p-5">
+        <div className="aspect-[3/4] h-full w-auto max-w-[42%] shrink-0 overflow-hidden rounded-xl border-2 border-black">
+          <img
+            src="/dewansh-about-portrait.jpg"
+            alt="Dewansh Saxena, UX/Product Designer"
+            className="h-full w-full object-cover object-[center_20%] motion-safe:scale-110"
+            draggable={false}
+          />
+        </div>
 
-        <dl className="flex min-w-0 flex-1 flex-col justify-center gap-2.5">
+        <dl className="flex h-full min-w-0 flex-1 flex-col justify-evenly self-stretch">
           {ID_CARD_DETAILS.map(({ label, value }) => (
-            <div key={label} className="flex items-baseline justify-between gap-2 border-b border-zinc-100 pb-2 last:border-0 last:pb-0">
-              <dt className="shrink-0 font-mono text-[9px] font-medium uppercase tracking-widest text-zinc-400">
+            <div key={label} className="flex items-baseline justify-between gap-2 border-b border-zinc-100 last:border-0">
+              <dt className="shrink-0 font-mono text-xs font-medium uppercase tracking-widest text-zinc-500">
                 {label.replace(':', '')}
               </dt>
-              <dd className="text-right font-mono text-[10px] font-semibold uppercase leading-snug tracking-wide text-zinc-800">
+              <dd className="shrink-0 text-right font-mono text-sm font-semibold uppercase leading-snug tracking-wide text-zinc-800">
                 {value}
               </dd>
             </div>
           ))}
         </dl>
       </div>
-
-      {/* Footer — QR strip */}
-      {qrUrl && (
-        <a
-          href={ID_CARD_QR_TARGET}
-          className="group flex items-center gap-3 border-t-[3px] border-black bg-zinc-50 px-4 py-3 motion-safe:transition-colors hover:bg-zinc-100"
-          aria-label="Scan QR code or tap to view resume"
-        >
-          <div className="shrink-0 border-2 border-black bg-white p-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] motion-safe:transition-transform group-hover:translate-x-[1px] group-hover:translate-y-[1px]">
-            <QRCodeSVG
-              value={qrUrl}
-              size={48}
-              fgColor="#000000"
-              bgColor="#ffffff"
-              level="M"
-              aria-hidden="true"
-            />
-          </div>
-          <div className="min-w-0">
-            <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-black">
-              Scan · Resume
-            </p>
-            <p className="mt-0.5 font-mono text-[9px] uppercase tracking-wide text-zinc-400">
-              Tap to open full CV
-            </p>
-          </div>
-        </a>
-      )}
     </article>
   )
 }
@@ -237,17 +198,27 @@ function PlaylistOfTheWeek() {
     }
 
     setActiveId(track.id)
+    const startAt = track.startAt ?? 0
     audio.src = track.audioSrc
-    audio.currentTime = 0
-    try {
-      await audio.play()
-    } catch {
-      setIsPlaying(false)
+
+    const playFromStart = async () => {
+      if (startAt > 0) audio.currentTime = startAt
+      try {
+        await audio.play()
+      } catch {
+        setIsPlaying(false)
+      }
+    }
+
+    if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) {
+      await playFromStart()
+    } else {
+      audio.addEventListener('loadedmetadata', () => playFromStart(), { once: true })
     }
   }
 
   return (
-    <article className={`${BRUTAL_CARD} flex h-full flex-col`}>
+    <article className={`${BRUTAL_CARD} flex h-fit w-full flex-col`}>
       <audio ref={audioRef} preload="metadata" className="hidden" />
 
       <div className="border-b-[3px] border-black bg-yellow-400 px-4 py-2.5">
@@ -317,7 +288,7 @@ function PlaylistOfTheWeek() {
       </ul>
 
       <p className="border-t-[3px] border-black px-4 py-2 text-right font-mono text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
-        5 tracks · jazz
+        5 tracks
       </p>
     </article>
   )
@@ -368,6 +339,45 @@ function PhotographyField() {
   )
 }
 
+// ── Profile + playlist row — profile height matches playlist ─────────────────
+
+function ProfilePlaylistRow() {
+  const playlistRef = useRef<HTMLDivElement>(null)
+  const [matchedHeight, setMatchedHeight] = useState<number>()
+
+  useEffect(() => {
+    const node = playlistRef.current
+    if (!node) return
+
+    const updateHeight = () => {
+      const isDesktop = window.matchMedia('(min-width: 768px)').matches
+      setMatchedHeight(isDesktop ? node.getBoundingClientRect().height : undefined)
+    }
+
+    updateHeight()
+    const observer = new ResizeObserver(updateHeight)
+    observer.observe(node)
+    window.addEventListener('resize', updateHeight)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', updateHeight)
+    }
+  }, [])
+
+  return (
+    <div className="mt-6 grid grid-cols-1 items-start gap-6 md:grid-cols-12 md:gap-6">
+      <div className="md:col-span-7" style={matchedHeight ? { height: matchedHeight } : undefined}>
+        <HangingIdCard />
+      </div>
+
+      <div ref={playlistRef} className="md:col-span-5">
+        <PlaylistOfTheWeek />
+      </div>
+    </div>
+  )
+}
+
 // ── Section ───────────────────────────────────────────────────────────────────
 
 export default function CuratorAbout() {
@@ -379,40 +389,35 @@ export default function CuratorAbout() {
           <span className="text-xs font-semibold uppercase tracking-widest text-zinc-400">About Me</span>
         </div>
 
-        {/* Row 1 — bio + ID card side by side */}
         <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-12 md:gap-6">
           <div className="md:col-span-7">
             <h2 className="mb-4 text-3xl font-semibold tracking-tight text-black lg:text-4xl">
               Life in a nutshell
             </h2>
             <p className="mb-3 text-base leading-relaxed text-zinc-500">
-              I hold a Master of Design (M.Des) in UX Design, which shapes how I look at interfaces. I
-              approach product design with the meticulous curation of an art museum—every detail,
-              component, and spatial transition must serve an intentional purpose.
+              I started out as a graphic designer, spent time at Uplers, then went back to do a Master's
+              in UX Design at MIT Institute of Design, mostly because I couldn't stop wondering how
+              large-scale products actually get built, and who's behind the decisions that shape them.
+              I'm deep into AI-based design workflows right now, but I don't think real creativity comes
+              from a prompt. I always start with my own research before I let AI anywhere near a project,
+              not the other way around.
             </p>
             <p className="text-base leading-relaxed text-zinc-500">
-              I am a huge music geek and jazz enthusiast, fascinated by antiques, astronomy, and
-              spiritual architecture literature. When a project hits maximum complexity, that is where I
-              thrive; I firmly believe my absolute best work is forged under structural challenges and
-              tight pressure.
+              Outside of work, I'm into jazz and classic rock from the '70s and '80s, and I'll take any
+              excuse to go to an art gallery or museum. Lately that's pulled me toward immersive art
+              specifically, and I've started teaching myself TouchDesigner just to understand how those
+              experiences actually get built. I also play a fair amount of poker. I like keeping things
+              fun, but if I'm honest, pressure genuinely gets the best out of me, and I work just as well
+              solo as I do on a team.
             </p>
           </div>
 
           <div className="md:col-span-5">
-            <HangingIdCard />
-          </div>
-        </div>
-
-        {/* Row 2 — tools + playlist aligned */}
-        <div className="mt-6 grid grid-cols-1 items-stretch gap-6 md:grid-cols-12 md:gap-6">
-          <div className="md:col-span-7">
             <ToolsStackCard />
           </div>
-
-          <div className="md:col-span-5">
-            <PlaylistOfTheWeek />
-          </div>
         </div>
+
+        <ProfilePlaylistRow />
       </div>
 
       <PhotographyField />

@@ -794,7 +794,7 @@ function PorvenixSnapshot() {
                   <span key={tool} className={`${PILL} inline-flex items-center gap-1.5`}>
                     {tool === 'Figma' ? (
                       <img
-                        src="/logo-illustrator.png"
+                        src="/figma.png"
                         alt=""
                         className="h-4 w-4 object-contain"
                         draggable={false}
@@ -802,7 +802,7 @@ function PorvenixSnapshot() {
                     ) : null}
                     {tool === 'Cursor' ? (
                       <img
-                        src="/logo-claude.png"
+                        src="/cursor.png"
                         alt=""
                         className="h-4 w-4 object-contain"
                         draggable={false}

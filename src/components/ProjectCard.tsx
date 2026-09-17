@@ -23,6 +23,9 @@ interface ProjectCardProps extends ProjectCardData {
   stacked?: boolean
 }
 
+const CARD_HOVER =
+  'motion-safe:transition-transform motion-reduce:transition-none motion-safe:group-hover:translate-x-[3px] motion-safe:group-hover:translate-y-[3px] motion-safe:group-active:translate-x-1.5 motion-safe:group-active:translate-y-1.5'
+
 function ArrowUpRight() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -66,21 +69,12 @@ export default function ProjectCard({
               ease: [0.22, 1, 0.36, 1],
             }
       }
-      whileHover={
-        stacked || !isClickable
-          ? undefined
-          : {
-              x: 6,
-              y: 6,
-              transition: { type: 'spring', stiffness: 400, damping: 25 },
-            }
-      }
-      className={`group relative z-10 flex min-h-[320px] flex-col overflow-hidden rounded-2xl border-2 border-black bg-[#fcfbfa] md:flex-row${
+      className={`group relative flex flex-col gap-6 overflow-hidden rounded-2xl border-2 border-black bg-[#fcfbfa] p-6 md:flex-row md:items-center md:gap-8 md:p-8 lg:p-10${
         isClickable ? ' cursor-pointer' : ''
       }`}
     >
       {/* Left — copy */}
-      <div className="flex flex-1 flex-col gap-5 p-6 md:w-[58%] md:p-8 lg:p-10">
+      <div className="flex flex-1 flex-col gap-5 md:w-[55%]">
         <div className="flex flex-wrap items-center gap-2">
           <span className="rounded-full border-2 border-black bg-black px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-wide text-white">
             {subtitle}
@@ -116,46 +110,52 @@ export default function ProjectCard({
         </div>
       </div>
 
-      {/* Right — visual */}
-      <div className="relative min-h-[220px] w-full overflow-hidden bg-yellow-400 md:w-[42%] md:min-h-0">
-        {coverImage ? (
-          <img
-            src={coverImage}
-            alt={coverImageAlt ?? `${title} product screenshot`}
-            className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
-          />
-        ) : (
-          <div
-            className={`h-full min-h-[220px] w-full transition-transform duration-500 group-hover:scale-[1.02] md:min-h-full ${coverClass}`}
-          />
-        )}
+      {/* Right — visual inset, aligned with text block */}
+      <div className="flex w-full items-center md:w-[45%]">
+        <div className="relative w-full overflow-hidden rounded-xl aspect-[4/3] md:aspect-[5/4]">
+          {coverImage ? (
+            <img
+              src={coverImage}
+              alt={coverImageAlt ?? `${title} product screenshot`}
+              className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+            />
+          ) : (
+            <div
+              className={`h-full w-full transition-transform duration-500 group-hover:scale-[1.02] ${coverClass}`}
+            />
+          )}
+        </div>
       </div>
     </motion.article>
   )
 
-  return (
-    <div className="relative">
+  const shell = (
+    <div className="group relative">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 translate-x-1.5 translate-y-1.5 rounded-2xl border-2 border-black bg-blue-600"
+        className="pointer-events-none absolute inset-0 translate-x-1.5 translate-y-1.5 rounded-2xl border-2 border-black bg-blue-600 opacity-0 motion-safe:transition-opacity motion-reduce:transition-none group-hover:opacity-100"
       />
 
-      {isClickable ? (
-        <Link
-          to={href!}
-          className="relative z-10 block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
-          aria-label={`View case study: ${title}`}
-        >
-          {card}
-        </Link>
-      ) : (
-        <div
-          className="relative z-10 block rounded-2xl"
-          aria-label={comingSoon ? `${title} — coming soon` : title}
-        >
-          {card}
-        </div>
-      )}
+      <div className={`relative z-10 ${CARD_HOVER}`}>
+        {isClickable ? (
+          <Link
+            to={href!}
+            className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+            aria-label={`View case study: ${title}`}
+          >
+            {card}
+          </Link>
+        ) : (
+          <div
+            className="block rounded-2xl"
+            aria-label={comingSoon ? `${title} — coming soon` : title}
+          >
+            {card}
+          </div>
+        )}
+      </div>
     </div>
   )
+
+  return shell
 }
